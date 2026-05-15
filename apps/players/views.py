@@ -9,6 +9,7 @@ from .forms import PlayerForm
 from .models import Player
 from apps.analytics.services import PlotlyService 
 
+
 class PlayerListView(RoleRequiredMixin, ListView):
     allowed_roles = ()
     model = Player
@@ -66,27 +67,30 @@ class PlayerUpdateView(RoleRequiredMixin, UpdateView):
     success_url = reverse_lazy("players:list")
 
 
-
 class PlayerDetailView(RoleRequiredMixin, DetailView):
-    allowed_roles = () # Todos los roles pueden ver detalles
+    # allowed_roles vacío = cualquier usuario autenticado con rol puede ver detalles
+    allowed_roles = ()
     model = Player
     template_name = "players/player_detail.html"
     context_object_name = "player"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        
-        # Datos temporales para la Fase 4 (0.0 a 1.0)
-        # En la Fase 5 esto vendrá de modelos de datos reales
+
+        # Datos temporales para la Fase 4 (0.0 a 1.0).
+        # En la Fase 5 esto vendrá de modelos de datos reales.
         mock_stats = {
-            'xG/90': 0.72,
-            'Pases Prog.': 0.85,
-            'Duelos Ganados': 0.40,
-            'Recuperaciones': 0.30,
-            'Toques Area': 0.90,
-            'Asistencias': 0.55
+            "xG/90": 0.72,
+            "Pases Prog.": 0.85,
+            "Duelos Ganados": 0.40,
+            "Recuperaciones": 0.30,
+            "Toques Area": 0.90,
+            "Asistencias": 0.55,
         }
-        
+
+        # Usamos el nombre completo definido en el modelo Player
+        player_name = self.object.full_name
+
         # Generamos el gráfico usando el servicio de la app analytics
-        ctx['radar_chart'] = PlotlyService.get_player_radar(mock_stats, self.object.first_name())
+        ctx["radar_chart"] = PlotlyService.get_player_radar(mock_stats, player_name)
         return ctx

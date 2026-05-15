@@ -2,22 +2,6 @@
 Crea KPIType básicos y MatchKPI de ejemplo para partidos FINISHED.
 Idempotente por (match, team, kpi_type).
 """
-import os
-import django
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
-import os
-import sys
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(BASE_DIR))
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
-
-import django
-
-django.setup()
 
 from decimal import Decimal
 
@@ -26,6 +10,10 @@ from apps.matches.models import Match
 
 
 def get_or_create_types():
+    """
+    Crea el catálogo básico de KPIType si no existe y devuelve
+    un mapa code -> KPIType.
+    """
     specs = [
         ("possession", "Posesión", "%", "Porcentaje de posesión"),
         ("xg", "xG", "goals", "Goles esperados acumulados"),
@@ -35,22 +23,45 @@ def get_or_create_types():
         ("prog_passes", "Pases progresivos", "count", "Pases que avanzan el balón"),
     ]
     types_map = {}
+    created = 0
+
     for code, name, unit, desc in specs:
-        kt, _ = KPIType.objects.get_or_create(
+        kt, was_created = KPIType.objects.get_or_create(
             code=code,
-            defaults={"name": name, "unit": unit, "description": desc},
+            defaults={
+                "name": name,
+                "unit": unit,
+                "description": desc,
+            },
         )
         types_map[code] = kt
+        if was_created:
+            created += 1
+
+    print(f"✅ KPIType preparados. Nuevos creados: {created}")
     return types_map
 
 
-def seed_match_kpis_for_finished(types_map):
-    created = 0
-    qs = Match.objects.filter(status=Match.Status.FINISHED).select_related("home_team", "away_team")
+def seed_match_kpis_for_finished(types_map: dict[str, KPIType]):
+    """
+    Crea o actualiza KPIs de ejemplo para todos los partidos FINISHED.
+    Usa update_or_create para ser idempotente.
+    """
+    matches = (
+        Match.objects.filter(status=Match.Status.FINISHED)
+        .select_related("home_team", "away_team")
+    )
 
-    for m in qs:
+    if not matches.exists():
+        print("⚠️ No hay partidos finalizados para asignar KPIs.")
+        return
+
+    created = 0
+    updated = 0
+
+    for m in matches:
         rows = [
-            # local
+            # Local
             (
                 m.home_team,
                 {
@@ -62,7 +73,7 @@ def seed_match_kpis_for_finished(types_map):
                     "prog_passes": Decimal("42"),
                 },
             ),
-            # visitante
+            # Visitante
             (
                 m.away_team,
                 {
@@ -78,7 +89,7 @@ def seed_match_kpis_for_finished(types_map):
 
         for team, bundle in rows:
             for code, val in bundle.items():
-                obj, was_created = MatchKPI.objects.get_or_create(
+                obj, was_created = MatchKPI.objects.update_or_create(
                     match=m,
                     team=team,
                     kpi_type=types_map[code],
@@ -86,15 +97,16 @@ def seed_match_kpis_for_finished(types_map):
                 )
                 if was_created:
                     created += 1
+                else:
+                    updated += 1
 
-    print(f"MatchKPI creados (nuevos): {created}")
+    print(f"✅ MatchKPI procesados. Creados: {created}, actualizados: {updated}")
 
 
-def main():
+def run():
+    """
+    Punto de entrada estándar para ejecutar el seed desde manage.py shell.
+    """
     types_map = get_or_create_types()
     seed_match_kpis_for_finished(types_map)
     print("OK: catálogo KPI + MatchKPI de ejemplo.")
-
-
-if __name__ == "__main__":
-    main()

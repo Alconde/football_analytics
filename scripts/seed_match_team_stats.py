@@ -1,54 +1,68 @@
 from decimal import Decimal
 
-import django
-
-django.setup()
-
 from apps.matches.models import Match, MatchTeamStat
 
 
-def main():
-    qs = Match.objects.filter(status=Match.Status.FINISHED).select_related("home_team", "away_team")
-    created = 0
-    for m in qs:
-        for team, poss, xg, shots, sot, ppda, rec in (
-            (
-                m.home_team,
-                Decimal("54.20"),
-                Decimal("1.350"),
-                14,
-                6,
-                Decimal("9.80"),
-                58,
-            ),
-            (
-                m.away_team,
-                Decimal("45.80"),
-                Decimal("0.920"),
-                10,
-                3,
-                Decimal("11.40"),
-                49,
-            ),
-        ):
-            obj, was_created = MatchTeamStat.objects.get_or_create(
-                match=m,
-                team=team,
-                defaults={
-                    "possession_pct": poss,
-                    "xg": xg,
-                    "shots": shots,
-                    "shots_on_target": sot,
-                    "passes": 420,
-                    "pass_accuracy_pct": Decimal("82.50"),
-                    "ppda": ppda,
-                    "recoveries": rec,
-                },
-            )
-            if was_created:
-                created += 1
-    print(f"MatchTeamStat creados (nuevos): {created}")
+def run():
+    partidos_finalizados = (
+        Match.objects.filter(status=Match.Status.FINISHED)
+        .select_related("home_team", "away_team")
+        .order_by("match_date")
+    )
 
+    if not partidos_finalizados.exists():
+        print("⚠️ No hay partidos finalizados.")
+        return
 
-if __name__ == "__main__":
-    main()
+    creados = 0
+    actualizados = 0
+
+    for i, match in enumerate(partidos_finalizados, start=1):
+        home_defaults = {
+            "possession_pct": Decimal(str(52 + (i % 7))),
+            "xg": Decimal(str(round(1.10 + (i * 0.17), 2))),
+            "shots": 10 + i,
+            "shots_on_target": 3 + (i % 4),
+            "passes": 320 + (i * 18),
+            "pass_accuracy_pct": Decimal(str(round(77.5 + (i % 6), 2))),
+            "ppda": Decimal(str(round(8.0 + (i % 3) * 0.7, 2))),
+            "recoveries": 44 + i,
+        }
+
+        away_defaults = {
+            "possession_pct": Decimal(str(max(35, 48 - (i % 7)))),
+            "xg": Decimal(str(round(0.85 + (i * 0.13), 2))),
+            "shots": 8 + i,
+            "shots_on_target": 2 + (i % 3),
+            "passes": 280 + (i * 15),
+            "pass_accuracy_pct": Decimal(str(round(74.5 + (i % 5), 2))),
+            "ppda": Decimal(str(round(9.1 + (i % 4) * 0.6, 2))),
+            "recoveries": 46 + i,
+        }
+
+        # Local
+        _, created = MatchTeamStat.objects.update_or_create(
+            match=match,
+            team=match.home_team,
+            defaults=home_defaults,
+        )
+        if created:
+            creados += 1
+        else:
+            actualizados += 1
+
+        # Visitante
+        _, created = MatchTeamStat.objects.update_or_create(
+            match=match,
+            team=match.away_team,
+            defaults=away_defaults,
+        )
+        if created:
+            creados += 1
+        else:
+            actualizados += 1
+
+    print(
+        f"✅ MatchTeamStat procesados correctamente. "
+        f"Creados: {creados}, actualizados: {actualizados}"
+    )
