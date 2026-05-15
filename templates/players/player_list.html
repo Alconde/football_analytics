@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Jugadores{% endblock %}
+
+{% block content %}
+  <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <div>
+      <h1 class="text-xl font-semibold text-white">Jugadores</h1>
+      <p class="mt-1 text-sm text-slate-400">
+        Base de datos de jugadores para análisis, scouting y seguimiento de plantilla.
+      </p>
+    </div>
+
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <form method="get" class="flex items-center gap-2">
+        <input
+          type="text"
+          name="q"
+          value="{{ q }}"
+          placeholder="Buscar jugador, equipo o nacionalidad"
+          class="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none md:w-72"
+        />
+        <button
+          type="submit"
+          class="rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-medium text-slate-200 hover:bg-slate-700"
+        >
+          Buscar
+        </button>
+      </form>
+
+      <a
+        href="{% url 'players:create' %}"
+        class="rounded-md bg-emerald-500 px-3 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-400"
+      >
+        Nuevo jugador
+      </a>
+    </div>
+  </div>
+
+  <div class="overflow-hidden rounded-xl border border-slate-800 bg-slate-950">
+    <table class="min-w-full divide-y divide-slate-800 text-sm">
+      <thead class="bg-slate-900 text-left text-xs uppercase tracking-wide text-slate-500">
+        <tr>
+          <th class="px-4 py-3">Jugador</th>
+          <th class="px-4 py-3">Posición</th>
+          <th class="px-4 py-3">Nacionalidad</th>
+          <th class="px-4 py-3">Equipo actual</th>
+          <th class="px-4 py-3">Estado</th>
+          <th class="px-4 py-3 text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-800">
+        {% for p in players %}
+          <tr class="hover:bg-slate-900/40">
+            <td class="px-4 py-3 text-slate-200">
+              <div class="font-medium text-white">{{ p.first_name }} {{ p.last_name }}</div>
+            </td>
+            <td class="px-4 py-3 text-slate-400">
+              {{ p.get_position_display }}
+            </td>
+            <td class="px-4 py-3 text-slate-400">
+              {{ p.nationality|default:"—" }}
+            </td>
+            <td class="px-4 py-3 text-slate-400">
+              {% if p.current_team %}
+                {{ p.current_team }}
+              {% else %}
+                —
+              {% endif %}
+            </td>
+            <td class="px-4 py-3">
+              {% if p.is_active %}
+                <span class="inline-flex rounded-full bg-emerald-500/15 px-2 py-1 text-xs font-medium text-emerald-300">
+                  Activo
+                </span>
+              {% else %}
+                <span class="inline-flex rounded-full bg-slate-700 px-2 py-1 text-xs font-medium text-slate-300">
+                  Inactivo
+                </span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 text-right">
+              <a href="{% url 'players:update' p.pk %}" class="text-emerald-400 hover:text-emerald-300">
+                Editar
+              </a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="px-4 py-8 text-center text-slate-500">
+              No hay jugadores registrados.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if is_paginated %}
+    <div class="mt-4 flex items-center justify-between text-sm text-slate-400">
+      <div>
+        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+      </div>
+      <div class="flex gap-2">
+        {% if page_obj.has_previous %}
+          <a
+            href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}"
+            class="rounded-md border border-slate-700 px-3 py-2 hover:bg-slate-800"
+          >
+            Anterior
+          </a>
+        {% endif %}
+        {% if page_obj.has_next %}
+          <a
+            href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}"
+            class="rounded-md border border-slate-700 px-3 py-2 hover:bg-slate-800"
+          >
+            Siguiente
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

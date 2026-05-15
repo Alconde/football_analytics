@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{% if form.instance.pk %}Editar partido{% else %}Nuevo partido{% endif %}{% endblock %}
+
+{% block content %}
+  <div class="mb-6">
+    <div class="text-xs text-slate-500">
+      <a href="{% url 'matches:list' %}" class="hover:text-emerald-400">← Volver a partidos</a>
+    </div>
+    <h1 class="mt-2 text-xl font-semibold text-white">
+      {% if form.instance.pk %}Editar partido{% else %}Nuevo partido{% endif %}
+    </h1>
+    <p class="mt-1 text-sm text-slate-400">
+      Registra calendario, contexto competitivo y resultado del encuentro.
+    </p>
+  </div>
+
+  <form method="post" class="max-w-3xl rounded-xl border border-slate-800 bg-slate-900 p-6">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="mb-4 rounded-lg border border-red-900/60 bg-red-950/40 p-4 text-sm text-red-200">
+        {% for error in form.non_field_errors %}
+          <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="grid gap-4 md:grid-cols-2">
+      {% for field in form %}
+        <div class="{% if field.name == 'venue' %}md:col-span-2{% endif %}">
+          <label for="{{ field.id_for_label }}" class="block text-xs font-medium uppercase tracking-wide text-slate-400">
+            {{ field.label }}
+          </label>
+          <div class="mt-1">
+            {{ field }}
+          </div>
+          {% if field.help_text %}
+            <p class="mt-1 text-xs text-slate-500">{{ field.help_text }}</p>
+          {% endif %}
+          {% for e in field.errors %}
+            <p class="mt-1 text-xs text-red-400">{{ e }}</p>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="mt-6 flex items-center gap-3">
+      <button
+        type="submit"
+        class="rounded-md bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-400"
+      >
+        Guardar
+      </button>
+      <a
+        href="{% url 'matches:list' %}"
+        class="rounded-md border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
+      >
+        Cancelar
+      </a>
+    </div>
+  </form>
+{% endblock %}

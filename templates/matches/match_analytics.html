@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Analítica · {{ match.home_team }} vs {{ match.away_team }}{% endblock %}
+{% block content %}
+  <div class="mb-6">
+    <div class="text-xs text-slate-500">
+      <a href="{% url 'matches:list' %}" class="hover:text-emerald-400">← Volver a partidos</a>
+    </div>
+    <h1 class="mt-2 text-xl font-semibold text-white">Analítica del partido</h1>
+    <p class="mt-1 text-sm text-slate-400">
+      {{ match.home_team }} vs {{ match.away_team }} · {{ match.match_date|date:"d/m/Y H:i" }}
+      {% if match.competition %}· {{ match.competition }}{% endif %}
+    </p>
+  </div>
+
+  {% if missing_stats %}
+    <div class="rounded-xl border border-amber-900/60 bg-amber-950/40 p-4 text-sm text-amber-100">
+      No hay estadísticas de equipo para este partido en <code class="text-amber-200">MatchTeamStat</code>.
+      Créalas en el admin (una fila por equipo) o ejecuta el script de ejemplo de la guía.
+    </div>
+  {% else %}
+    <div class="rounded-xl border border-slate-800 bg-slate-900 p-4">
+      {{ chart_html|safe }}
+        {% if has_radar %}
+            <div class="mt-8 rounded-xl border border-slate-800 bg-slate-900 p-4">
+            {{ radar_chart_html|safe }}
+            </div>
+        {% endif %}
+
+        {% if has_kpi_chart %}
+            <div class="mt-8 rounded-xl border border-slate-800 bg-slate-900 p-4">
+            {{ kpi_chart_html|safe }}
+            </div>
+        {% elif not missing_stats %}
+            <div class="mt-8 rounded-xl border border-slate-800 bg-amber-950/30 p-4 text-sm text-amber-100">
+            Aún no hay filas en <code class="text-amber-200">MatchKPI</code> para este partido. Ejecuta el script de semilla o carga KPIs desde admin.
+            </div>
+        {% endif %}
+    </div>
+  {% endif %}
+{% endblock %}

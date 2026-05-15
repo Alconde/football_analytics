@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Jugador{% endblock %}
+{% block content %}
+  <h1 class="mb-6 text-xl font-semibold text-white">Ficha de jugador</h1>
+  <form method="post" class="max-w-xl space-y-4 rounded-xl border border-slate-800 bg-slate-900 p-6">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+      <div>
+        <label class="block text-xs font-medium text-slate-400">{{ field.label }}</label>
+        <div class="mt-1">{{ field }}</div>
+        {% if field.help_text %}<p class="mt-1 text-xs text-slate-500">{{ field.help_text }}</p>{% endif %}
+        {% for e in field.errors %}<p class="mt-1 text-xs text-red-400">{{ e }}</p>{% endfor %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="rounded-md bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-400">Guardar</button>
+  </form>
+{% endblock %}

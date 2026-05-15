@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Partidos{% endblock %}
+{% block content %}
+  <div class="mb-6 flex items-center justify-between">
+    <h1 class="text-xl font-semibold text-white">Partidos</h1>
+    <a href="{% url 'matches:create' %}" class="rounded-md bg-emerald-500 px-3 py-2 text-xs font-semibold text-slate-950 hover:bg-emerald-400">
+      Nuevo partido
+    </a>
+  </div>
+  <ul class="divide-y divide-slate-800 rounded-xl border border-slate-800 bg-slate-900 text-sm">
+    {% for m in matches %}
+      <li class="flex flex-wrap items-center justify-between gap-2 px-4 py-3">
+        <a href="{% url 'matches:analytics' m.pk %}" class="text-emerald-400 hover:text-emerald-300">Analítica</a>
+        <div class="text-slate-200">
+          {{ m.home_team }} vs {{ m.away_team }}
+          <span class="text-slate-500">· {{ m.match_date|date:"d/m/Y H:i" }}</span>
+        </div>
+        <div class="text-slate-400">
+          {% if m.status == "finished" %}{{ m.home_score }} - {{ m.away_score }}{% else %}{{ m.get_status_display }}{% endif %}
+        </div>
+      </li>
+    {% empty %}
+      <li class="px-4 py-6 text-center text-slate-500">No hay partidos.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

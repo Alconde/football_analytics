@@ -1,0 +1,11 @@
+<select
+  name="match"
+  class="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
+>
+  <option value="">— Todos en la temporada —</option>
+  {% for m in matches %}
+    <option value="{{ m.id }}" {% if selected_match == m.id|stringformat:"s" %}selected{% endif %}>
+      {{ m.match_date|date:"d/m/Y H:i" }} · {{ m.home_team }} vs {{ m.away_team }}
+    </option>
+  {% endfor %}
+</select>

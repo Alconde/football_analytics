@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Informe táctico{% endblock %}
+{% block content %}
+  <h1 class="mb-6 text-xl font-semibold text-white">Nuevo informe táctico</h1>
+  <form method="post" class="max-w-2xl space-y-4 rounded-xl border border-slate-800 bg-slate-900 p-6">
+    {% csrf_token %}
+    {% for field in form %}
+      <div>
+        <label class="block text-xs font-medium text-slate-400">{{ field.label }}</label>
+        <div class="mt-1">{{ field }}</div>
+        {% for e in field.errors %}<p class="mt-1 text-xs text-red-400">{{ e }}</p>{% endfor %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="rounded-md bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-400">Guardar informe</button>
+  </form>
+{% endblock %}
