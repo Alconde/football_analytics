@@ -38,7 +38,7 @@ def get_or_create_types():
         if was_created:
             created += 1
 
-    print(f"✅ KPIType preparados. Nuevos creados: {created}")
+    print(f"KPIType preparados. Nuevos creados: {created}")
     return types_map
 
 
@@ -53,7 +53,7 @@ def seed_match_kpis_for_finished(types_map: dict[str, KPIType]):
     )
 
     if not matches.exists():
-        print("⚠️ No hay partidos finalizados para asignar KPIs.")
+        print("No hay partidos finalizados para asignar KPIs.")
         return
 
     created = 0
@@ -100,7 +100,7 @@ def seed_match_kpis_for_finished(types_map: dict[str, KPIType]):
                 else:
                     updated += 1
 
-    print(f"✅ MatchKPI procesados. Creados: {created}, actualizados: {updated}")
+    print(f"MatchKPI procesados. Creados: {created}, actualizados: {updated}")
 
 
 def run():
@@ -110,3 +110,7 @@ def run():
     types_map = get_or_create_types()
     seed_match_kpis_for_finished(types_map)
     print("OK: catálogo KPI + MatchKPI de ejemplo.")
+
+
+if __name__ == "__main__":
+    run()

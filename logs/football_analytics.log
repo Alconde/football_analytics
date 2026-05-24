@@ -1,0 +1,62 @@
+INFO 22/05/2026 14:17:19 autoreload run_with_reloader 681 | Watching for file changes with StatReloader
+INFO 22/05/2026 14:35:21 autoreload run_with_reloader 681 | Watching for file changes with StatReloader
+WARNING 22/05/2026 14:35:28 log log_message 249 | "GET /favicon.ico HTTP/1.1" 404 17730
+WARNING 22/05/2026 14:35:29 log log_message 249 | "GET /analytics/ HTTP/1.1" 404 17725
+INFO 22/05/2026 14:35:36 log log_message 249 | "GET / HTTP/1.1" 302 0
+INFO 22/05/2026 14:35:36 log log_message 249 | "GET /accounts/login/?next=/ HTTP/1.1" 200 16984
+INFO 22/05/2026 14:35:43 log log_message 249 | "POST /accounts/login/?next=/ HTTP/1.1" 200 17069
+INFO 22/05/2026 14:35:51 basehttp handle_error 82 | - Broken pipe from ('127.0.0.1', 57133)
+INFO 22/05/2026 14:35:52 log log_message 249 | "POST /accounts/login/?next=/ HTTP/1.1" 200 17069
+INFO 22/05/2026 14:36:12 basehttp handle_error 82 | - Broken pipe from ('127.0.0.1', 55580)
+INFO 22/05/2026 14:36:13 log log_message 249 | "POST /accounts/login/?next=/ HTTP/1.1" 200 17069
+INFO 22/05/2026 14:36:42 log log_message 249 | "POST /accounts/login/?next=/ HTTP/1.1" 200 17069
+INFO 22/05/2026 14:37:10 log log_message 249 | "POST /accounts/login/?next=/ HTTP/1.1" 200 17069
+INFO 22/05/2026 14:37:23 log log_message 249 | "POST /accounts/login/?next=/ HTTP/1.1" 200 17069
+INFO 22/05/2026 14:37:36 log log_message 249 | "GET / HTTP/1.1" 302 0
+INFO 22/05/2026 14:37:36 log log_message 249 | "GET /accounts/login/?next=/ HTTP/1.1" 200 16984
+INFO 22/05/2026 14:37:38 log log_message 249 | "GET /players/ HTTP/1.1" 302 0
+INFO 22/05/2026 14:37:38 log log_message 249 | "GET /accounts/login/?next=/players/ HTTP/1.1" 200 16992
+INFO 22/05/2026 14:37:39 log log_message 249 | "GET /matches/ HTTP/1.1" 302 0
+INFO 22/05/2026 14:37:39 log log_message 249 | "GET /accounts/login/?next=/matches/ HTTP/1.1" 200 16992
+INFO 22/05/2026 14:37:39 log log_message 249 | "GET /tactical/informes/ HTTP/1.1" 302 0
+INFO 22/05/2026 14:37:39 log log_message 249 | "GET /accounts/login/?next=/tactical/informes/ HTTP/1.1" 200 17002
+INFO 22/05/2026 14:37:40 log log_message 249 | "GET /reports/ HTTP/1.1" 302 0
+INFO 22/05/2026 14:37:40 log log_message 249 | "GET /accounts/login/?next=/reports/ HTTP/1.1" 200 16992
+INFO 23/05/2026 17:30:45 autoreload run_with_reloader 681 | Watching for file changes with StatReloader
+INFO 23/05/2026 17:30:55 log log_message 249 | "GET /accounts/login/?next=/reports/ HTTP/1.1" 200 16993
+WARNING 23/05/2026 17:30:59 log log_message 249 | "GET /favicon.ico HTTP/1.1" 404 17730
+INFO 23/05/2026 17:31:06 log log_message 249 | "POST /accounts/login/?next=/reports/ HTTP/1.1" 200 17078
+INFO 23/05/2026 17:31:07 log log_message 249 | "GET /static/debug_toolbar/css/toolbar.css HTTP/1.1" 304 0
+INFO 23/05/2026 17:31:07 log log_message 249 | "GET /static/debug_toolbar/js/toolbar.js HTTP/1.1" 304 0
+INFO 23/05/2026 17:31:07 log log_message 249 | "GET /static/debug_toolbar/css/print.css HTTP/1.1" 304 0
+INFO 23/05/2026 17:31:07 log log_message 249 | "GET /static/debug_toolbar/js/utils.js HTTP/1.1" 304 0
+INFO 23/05/2026 17:31:17 log log_message 249 | "POST /accounts/login/?next=/reports/ HTTP/1.1" 200 17077
+INFO 23/05/2026 17:36:48 log log_message 249 | "POST /accounts/login/?next=/reports/ HTTP/1.1" 302 0
+INFO 23/05/2026 17:36:48 log log_message 249 | "GET /reports/ HTTP/1.1" 200 17532
+INFO 23/05/2026 17:36:54 log log_message 249 | "GET / HTTP/1.1" 200 19613
+ERROR 23/05/2026 17:37:00 log log_message 249 | "GET /players/ HTTP/1.1" 500 211392
+INFO 23/05/2026 17:47:34 autoreload trigger_reload 265 | C:\proyectos\football_analytics\apps\core\managers.py changed, reloading.
+INFO 23/05/2026 17:47:38 autoreload run_with_reloader 681 | Watching for file changes with StatReloader
+INFO 23/05/2026 17:47:59 autoreload trigger_reload 265 | C:\proyectos\football_analytics\apps\core\managers.py changed, reloading.
+INFO 23/05/2026 17:48:02 autoreload run_with_reloader 681 | Watching for file changes with StatReloader
+INFO 23/05/2026 17:48:20 autoreload trigger_reload 265 | C:\proyectos\football_analytics\apps\core\managers.py changed, reloading.
+INFO 23/05/2026 17:48:22 autoreload run_with_reloader 681 | Watching for file changes with StatReloader
+INFO 23/05/2026 17:49:52 basehttp handle_error 82 | - Broken pipe from ('127.0.0.1', 55122)
+INFO 23/05/2026 17:49:54 log log_message 249 | "GET /players/ HTTP/1.1" 200 40134
+INFO 23/05/2026 17:50:01 log log_message 249 | "GET /matches/ HTTP/1.1" 200 20574
+INFO 23/05/2026 17:50:03 log log_message 249 | "GET /matches/8/analitica/ HTTP/1.1" 200 17191
+INFO 23/05/2026 17:50:09 log log_message 249 | "GET /tactical/informes/ HTTP/1.1" 200 23848
+INFO 23/05/2026 17:50:12 log log_message 249 | "GET /reports/ HTTP/1.1" 200 17531
+INFO 23/05/2026 17:50:14 log log_message 249 | "GET /tactical/informes/ HTTP/1.1" 200 23848
+INFO 23/05/2026 17:50:15 log log_message 249 | "GET /matches/ HTTP/1.1" 200 20574
+INFO 23/05/2026 17:50:18 log log_message 249 | "GET / HTTP/1.1" 200 29990
+INFO 23/05/2026 17:50:37 log log_message 249 | "GET /players/ HTTP/1.1" 200 40135
+INFO 23/05/2026 17:50:45 log log_message 249 | "GET /players/01/ HTTP/1.1" 200 26009
+INFO 23/05/2026 17:52:16 log log_message 249 | "GET / HTTP/1.1" 200 38339
+INFO 23/05/2026 17:52:58 autoreload run_with_reloader 681 | Watching for file changes with StatReloader
+INFO 23/05/2026 17:53:02 log log_message 249 | "GET / HTTP/1.1" 200 38339
+INFO 23/05/2026 17:53:07 log log_message 249 | "GET /players/ HTTP/1.1" 200 43758
+INFO 23/05/2026 17:53:15 log log_message 249 | "GET /matches/ HTTP/1.1" 200 22118
+INFO 23/05/2026 17:53:17 log log_message 249 | "GET /matches/11/analitica/ HTTP/1.1" 200 41861
+INFO 23/05/2026 17:53:21 log log_message 249 | "GET /tactical/informes/ HTTP/1.1" 200 22607
+INFO 23/05/2026 17:53:24 log log_message 249 | "GET /reports/ HTTP/1.1" 200 17531

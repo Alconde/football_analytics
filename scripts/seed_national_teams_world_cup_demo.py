@@ -389,7 +389,7 @@ for item in matches_data:
     if stat_created:
         created_stats += 1
 
-print("✅ Seed selecciones / Copa del Mundo demo completado")
+print("Seed selecciones / Copa del Mundo demo completado")
 print(f"Season: {season}")
 print(f"Competition: {competition}")
 print(f"Federaciones: {len(federations)}")

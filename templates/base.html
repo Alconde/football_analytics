@@ -6,6 +6,7 @@
     <title>{% block title %}Football Analytics{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
     <style>
     input, select, textarea {
         width: 100%;
@@ -29,7 +30,8 @@
             <a href="{% url 'dashboard' %}" class="hover:text-white">Inicio</a>
             <a href="{% url 'players:list' %}" class="hover:text-white">Jugadores</a>
             <a href="{% url 'matches:list' %}" class="hover:text-white">Partidos</a>
-            <a href="{% url 'tactical:list' %}" class="hover:text-white">Informes tácticos</a>            
+            <a href="{% url 'tactical:list' %}" class="hover:text-white">Informes tácticos</a>
+            <a href="{% url 'reports:list' %}" class="hover:text-white">Informes</a>
             {% if user.is_authenticated %}
               <span class="text-slate-500">|</span>
               <span class="text-slate-400">{{ user.get_username }} ({{ user.get_role_display }})</span>

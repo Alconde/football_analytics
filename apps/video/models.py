@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+
 from django.db import models
 
 from apps.matches.models import Match
@@ -33,7 +35,22 @@ class VideoTag(models.Model):
         related_name="video_tags",
     )
     note = models.TextField(blank=True)
-
+    def clean(self):
+        """Validar que el timestamp esté dentro de la duración del vídeo"""
+        super().clean()
+        if self.video and self.second_mark:
+            if self.second_mark > self.video.duration_seconds:
+                raise ValidationError({
+                    'second_mark': f'El marcador ({self.second_mark}s) excede la duración del vídeo ({self.video.duration_seconds}s)'
+                })
+            if self.second_mark < 0:
+                raise ValidationError({
+                    'second_mark': 'El marcador no puede ser negativo'
+                })
+    
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
     class Meta:
         ordering = ["video", "second_mark"]
 
@@ -47,7 +64,32 @@ class VideoClip(models.Model):
     start_second = models.PositiveIntegerField()
     end_second = models.PositiveIntegerField()
     export_path = models.CharField(max_length=255, blank=True)
-
+    def clean(self):
+        """Validar rango de inicio y fin del clip"""
+        super().clean()
+        
+        if self.start_second is not None and self.end_second is not None:
+            if self.start_second >= self.end_second:
+                raise ValidationError({
+                    'start_second': 'El inicio debe ser menor que el fin',
+                    'end_second': 'El fin debe ser mayor que el inicio'
+                })
+            
+            if self.video and self.video.duration_seconds:
+                if self.end_second > self.video.duration_seconds:
+                    raise ValidationError({
+                        'end_second': f'El fin ({self.end_second}s) excede la duración del vídeo'
+                    })
+        
+        if self.start_second is not None and self.start_second < 0:
+            raise ValidationError({'start_second': 'El inicio no puede ser negativo'})
+        
+        if self.end_second is not None and self.end_second < 0:
+            raise ValidationError({'end_second': 'El fin no puede ser negativo'})
+    
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
     class Meta:
         ordering = ["video", "start_second"]
 

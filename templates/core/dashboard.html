@@ -6,12 +6,43 @@
     <p class="text-sm text-slate-400">Resumen operativo para staff técnico y analistas.</p>
   </div>
 
-  <div class="grid gap-6 md:grid-cols-3">
+  <div class="grid gap-6 md:grid-cols-4">
     <div class="rounded-xl border border-slate-800 bg-slate-900 p-4">
-      <p class="text-xs uppercase tracking-wide text-slate-500">Plantilla activa</p>
-      <p class="mt-2 text-3xl font-semibold text-white">{{ players_count }}</p>
-      <p class="mt-1 text-xs text-slate-400">jugadores con ficha activa</p>
+      <p class="text-xs uppercase tracking-wide text-slate-500">Partidos programados</p>
+      <p class="mt-2 text-3xl font-semibold text-white">{{ matches_scheduled }}</p>
+      <p class="mt-1 text-xs text-slate-400">Próximos partidos en calendario</p>
     </div>
+    <div class="rounded-xl border border-slate-800 bg-slate-900 p-4">
+      <p class="text-xs uppercase tracking-wide text-slate-500">Partidos finalizados</p>
+      <p class="mt-2 text-3xl font-semibold text-white">{{ matches_finished }}</p>
+      <p class="mt-1 text-xs text-slate-400">Partidos con análisis y KPIs</p>
+    </div>
+    <div class="rounded-xl border border-slate-800 bg-slate-900 p-4">
+      <p class="text-xs uppercase tracking-wide text-slate-500">KPIs registrados</p>
+      <p class="mt-2 text-3xl font-semibold text-white">{{ kpi_entries }}</p>
+      <p class="mt-1 text-xs text-slate-400">Valores de rendimiento táctico y físico</p>
+    </div>
+    <div class="rounded-xl border border-slate-800 bg-slate-900 p-4">
+      <p class="text-xs uppercase tracking-wide text-slate-500">Jugadores activos</p>
+      <p class="mt-2 text-3xl font-semibold text-white">{{ players_count }}</p>
+      <p class="mt-1 text-xs text-slate-400">Plantilla disponible para análisis</p>
+    </div>
+  </div>
+
+  <div class="mt-8 grid gap-6 xl:grid-cols-3">
+    <section class="rounded-xl border border-slate-800 bg-slate-900 p-4 xl:col-span-2">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-white">Tendencia de KPIs por partido</h2>
+        <span class="text-xs text-slate-500">Últimos 6 encuentros finalizados</span>
+      </div>
+      <div class="mt-4">{{ trend_chart_html|safe }}</div>
+    </section>
+
+    <section class="rounded-xl border border-slate-800 bg-slate-900 p-4">
+      <h2 class="text-sm font-semibold text-white">Resumen KPI</h2>
+      <p class="text-xs text-slate-500">Promedio de valores registrados en partidos finalizados</p>
+      <div class="mt-4">{{ kpi_summary_chart|safe }}</div>
+    </section>
   </div>
 
   <div class="mt-8 grid gap-6 lg:grid-cols-2">

@@ -4,7 +4,7 @@ from django.conf import settings
 from apps.matches.models import Match
 from apps.players.models import Player
 from apps.clubs.models import Team
-
+from apps.core.managers import ReportManager
 
 class GeneratedReport(models.Model):
     class ReportType(models.TextChoices):
@@ -34,7 +34,7 @@ class GeneratedReport(models.Model):
     summary = models.TextField(blank=True)
 
     generated_at = models.DateTimeField(auto_now_add=True)
-
+    objects = ReportManager()
     class Meta:
         ordering = ["-generated_at"]
 

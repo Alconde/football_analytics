@@ -1,5 +1,5 @@
 from django.db import models
-
+from apps.core.managers import ClubManager, TeamManager
 
 class Club(models.Model):
     """
@@ -44,7 +44,9 @@ class Club(models.Model):
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
-
+    
+    # Manager personalizado
+    objects = ClubManager()
     class Meta:
         ordering = ["name"]
 
@@ -155,6 +157,8 @@ class Team(models.Model):
     )
     fifa_ranking = models.PositiveIntegerField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
+
+    objects = TeamManager()
 
     class Meta:
         unique_together = ("club", "name")

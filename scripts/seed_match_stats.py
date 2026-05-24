@@ -6,7 +6,7 @@ partidos_finalizados = Match.objects.filter(
 ).select_related("home_team", "away_team").order_by("match_date")
 
 if not partidos_finalizados.exists():
-    print("⚠️ No hay partidos finalizados.")
+    print("No hay partidos finalizados.")
 else:
     creados = 0
     actualizados = 0
@@ -54,4 +54,4 @@ else:
         else:
             actualizados += 1
 
-    print(f"✅ MatchTeamStat procesados correctamente. Creados: {creados}, actualizados: {actualizados}")
+    print(f"MatchTeamStat procesados correctamente. Creados: {creados}, actualizados: {actualizados}")

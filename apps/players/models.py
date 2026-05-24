@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 
 from apps.clubs.models import Team, Season, Competition
-
+from apps.core.managers import PlayerManager
 
 class Player(models.Model):
     class Position(models.TextChoices):
@@ -37,6 +37,7 @@ class Player(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    objects = PlayerManager()
     class Meta:
         ordering = ["last_name", "first_name"]
 

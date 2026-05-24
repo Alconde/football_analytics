@@ -3,7 +3,7 @@ from django.db import models
 from apps.matches.models import Match
 from apps.clubs.models import Team
 from apps.players.models import Player
-
+from apps.core.managers import KPIManager
 
 class KPIType(models.Model):
     code = models.CharField(max_length=40, unique=True)  # xg, ppda, duels_won_pct...
@@ -23,7 +23,7 @@ class MatchKPI(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="match_kpis")
     kpi_type = models.ForeignKey(KPIType, on_delete=models.PROTECT, related_name="match_values")
     value = models.DecimalField(max_digits=12, decimal_places=4)
-
+    objects = KPIManager()
     class Meta:
         unique_together = ("match", "team", "kpi_type")
         ordering = ["-match__match_date"]

@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 from apps.clubs.models import Competition, Season, Team
-
+from apps.core.managers import MatchManager
 
 class Match(models.Model):
     class Status(models.TextChoices):
@@ -66,6 +66,7 @@ class Match(models.Model):
         auto_now=True,
     )
 
+    objects = MatchManager()
     class Meta:
         ordering = ["-match_date"]
         verbose_name = "Partido"

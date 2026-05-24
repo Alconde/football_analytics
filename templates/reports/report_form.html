@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Nuevo informe · Football Analytics{% endblock %}
+{% block content %}
+  <div class="mb-8">
+    <h1 class="text-2xl font-semibold text-white">Generar informe automatizado</h1>
+    <p class="text-sm text-slate-400">El sistema generará un informe con resumen ejecutivo y lo guardará en el formato elegido.</p>
+  </div>
+
+  <div class="rounded-xl border border-slate-800 bg-slate-900 p-6">
+    <form method="post">
+      {% csrf_token %}
+      <div class="grid gap-6 lg:grid-cols-2">
+        <div>
+          <label class="text-sm font-semibold text-slate-200">Título</label>
+          {{ form.title }}
+          {% if form.title.errors %}
+            <p class="mt-1 text-xs text-rose-400">{{ form.title.errors|join:", " }}</p>
+          {% endif %}
+        </div>
+        <div>
+          <label class="text-sm font-semibold text-slate-200">Tipo de informe</label>
+          {{ form.report_type }}
+          {% if form.report_type.errors %}
+            <p class="mt-1 text-xs text-rose-400">{{ form.report_type.errors|join:", " }}</p>
+          {% endif %}
+        </div>
+        <div>
+          <label class="text-sm font-semibold text-slate-200">Formato de salida</label>
+          {{ form.file_type }}
+          {% if form.file_type.errors %}
+            <p class="mt-1 text-xs text-rose-400">{{ form.file_type.errors|join:", " }}</p>
+          {% endif %}
+        </div>
+        <div>
+          <label class="text-sm font-semibold text-slate-200">Partido</label>
+          {{ form.match }}
+          {% if form.match.help_text %}
+            <p class="mt-1 text-xs text-slate-500">{{ form.match.help_text }}</p>
+          {% endif %}
+        </div>
+        <div>
+          <label class="text-sm font-semibold text-slate-200">Equipo</label>
+          {{ form.team }}
+          {% if form.team.help_text %}
+            <p class="mt-1 text-xs text-slate-500">{{ form.team.help_text }}</p>
+          {% endif %}
+        </div>
+        <div>
+          <label class="text-sm font-semibold text-slate-200">Jugador</label>
+          {{ form.player }}
+          {% if form.player.help_text %}
+            <p class="mt-1 text-xs text-slate-500">{{ form.player.help_text }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="mt-4 rounded-xl border border-rose-500 bg-rose-950/20 p-3 text-sm text-rose-200">
+          {{ form.non_field_errors|join:" " }}
+        </div>
+      {% endif %}
+
+      <div class="mt-6 flex items-center gap-3">
+        <button type="submit" class="rounded-full bg-emerald-500 px-5 py-3 text-sm font-semibold text-slate-950 hover:bg-emerald-400">Generar informe</button>
+        <a href="{% url 'reports:list' %}" class="text-sm text-slate-400 hover:text-white">Cancelar</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

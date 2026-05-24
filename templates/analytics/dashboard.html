@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - Football Analytics{% endblock %}
+
+{% block extra_css %}
+<style>
+    .metric-card {
+        transition: all 0.3s ease;
+    }
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+    }
+    .match-item {
+        border-left: 4px solid transparent;
+        transition: all 0.2s ease;
+    }
+    .match-item:hover {
+        border-left-color: #3b82f6;
+        background-color: rgba(59, 130, 246, 0.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-900 text-white">
+    
+    <!-- Header Sticky -->
+    <div class="bg-gradient-to-r from-gray-800 to-gray-900 border-b border-gray-700 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-4xl font-black text-white">⚽ Dashboard Táctico</h1>
+                    <p class="text-gray-400 mt-1">
+                        {% if current_season %}
+                            📅 Temporada {{ current_season.start_date|date:"Y" }}-{{ current_season.end_date|date:"Y" }}
+                        {% endif %}
+                    </p>
+                </div>
+                
+                {% if teams %}
+                <div class="flex items-center gap-3 bg-gray-700 px-4 py-2 rounded-lg">
+                    <span class="text-gray-300 font-semibold">🏟️ Equipo:</span>
+                    <select id="team-select" class="bg-transparent text-white font-medium border-none focus:ring-0 cursor-pointer">
+                        {% for team in teams %}
+                            <option value="{{ team.id }}" {% if team == selected_team %}selected{% endif %}>
+                                {{ team.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        
+        <!-- Metrics Cards Row -->
+        {% if dashboard_metrics %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            
+            <!-- Partidos Jugados -->
+            <div class="metric-card bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl p-6 border border-blue-500 shadow-lg">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-blue-200 text-sm font-semibold uppercase tracking-wider">Partidos</p>
+                        <p class="text-5xl font-black text-white mt-2">{{ dashboard_metrics.total_matches }}</p>
+                        <p class="text-blue-100 text-xs mt-3 font-medium">
+                            <span class="text-green-300">{{ dashboard_metrics.victories }}V</span> • 
+                            <span class="text-yellow-300">{{ dashboard_metrics.draws }}E</span> • 
+                            <span class="text-red-300">{{ dashboard_metrics.defeats }}D</span>
+                        </p>
+                    </div>
+                    <div class="text-4xl opacity-30">⚽</div>
+                </div>
+            </div>
+
+            <!-- Puntos -->
+            <div class="metric-card bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-xl p-6 border border-emerald-500 shadow-lg">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-emerald-200 text-sm font-semibold uppercase tracking-wider">Puntos</p>
+                        <p class="text-5xl font-black text-white mt-2">{{ dashboard_metrics.points }}</p>
+                        <p class="text-emerald-100 text-xs mt-3 font-medium">
+                            {{ dashboard_metrics.points_per_match }} por partido
+                        </p>
+                    </div>
+                    <div class="text-4xl opacity-30">⭐</div>
+                </div>
+            </div>
+
+            <!-- Goles -->
+            <div class="metric-card bg-gradient-to-br from-orange-600 to-orange-800 rounded-xl p-6 border border-orange-500 shadow-lg">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-orange-200 text-sm font-semibold uppercase tracking-wider">Goles</p>
+                        <p class="text-5xl font-black text-white mt-2">{{ dashboard_metrics.goals_for }}</p>
+                        <p class="text-orange-100 text-xs mt-3 font-medium">
+                            {{ dashboard_metrics.goals_against }} en contra | Dif: {{ dashboard_metrics.goal_difference }}
+                        </p>
+                    </div>
+                    <div class="text-4xl opacity-30">🎯</div>
+                </div>
+            </div>
+
+            <!-- Win Rate -->
+            <div class="metric-card bg-gradient-to-br from-purple-600 to-purple-800 rounded-xl p-6 border border-purple-500 shadow-lg">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-purple-200 text-sm font-semibold uppercase tracking-wider">Efectividad</p>
+                        <p class="text-5xl font-black text-white mt-2">{{ dashboard_metrics.win_percentage }}%</p>
+                        <p class="text-purple-100 text-xs mt-3 font-medium">
+                            Tasa de victorias
+                        </p>
+                    </div>
+                    <div class="text-4xl opacity-30">🏆</div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="bg-yellow-900/30 border border-yellow-600 rounded-lg p-6 mb-8 text-yellow-300">
+            <p class="font-semibold">⚠️ No hay datos disponibles</p>
+            <p class="text-sm mt-1">Crea una temporada y partidos para ver las métricas.</p>
+        </div>
+        {% endif %}
+
+        <!-- Main Grid: Matches & Recent Results -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            
+            <!-- Próximos Partidos (2/3 ancho) -->
+            <div class="lg:col-span-2">
+                <div class="bg-gray-800 border border-gray-700 rounded-xl p-6 shadow-lg h-full">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-1 h-8 bg-blue-500 rounded"></div>
+                        <h2 class="text-2xl font-bold text-white">📅 Próximos Partidos</h2>
+                    </div>
+                    
+                    {% if upcoming_matches %}
+                    <div class="space-y-3">
+                        {% for match in upcoming_matches %}
+                        <a href="{% url 'analytics:match_detail' match.id %}" class="block group">
+                            <div class="match-item bg-gray-700/50 hover:bg-gray-700 rounded-lg p-4 transition-all cursor-pointer">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-semibold text-gray-400 uppercase">{{ match.match_date|date:"d \d\e M \a \l\a\s H:i" }}</span>
+                                    <span class="text-xs bg-blue-900 text-blue-200 px-2 py-1 rounded">{{ match.get_status_display|upper }}</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1 text-center pr-4">
+                                        <p class="font-bold text-white group-hover:text-blue-300 transition">{{ match.home_team.name }}</p>
+                                        <p class="text-xs text-gray-400 mt-1">Local</p>
+                                    </div>
+                                    <div class="px-3 py-1 bg-gray-600 rounded text-center">
+                                        <p class="text-gray-300 font-medium">vs</p>
+                                    </div>
+                                    <div class="flex-1 text-center pl-4">
+                                        <p class="font-bold text-white group-hover:text-blue-300 transition">{{ match.away_team.name }}</p>
+                                        <p class="text-xs text-gray-400 mt-1">Visitante</p>
+                                    </div>
+                                </div>
+                                {% if match.venue %}
+                                <p class="text-xs text-gray-500 mt-2">📍 {{ match.venue }}</p>
+                                {% endif %}
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-12 text-gray-400">
+                        <p class="text-2xl mb-2">📭</p>
+                        <p>No hay próximos partidos programados</p>
+                    </div>
+                    {% endif %}
+                    
+                    <a href="{% url 'analytics:calendar' %}" class="inline-block mt-6 text-blue-400 hover:text-blue-300 font-semibold transition">
+                        📆 Ver calendario completo →
+                    </a>
+                </div>
+            </div>
+
+            <!-- Últimos Resultados (1/3 ancho) -->
+            <div>
+                <div class="bg-gray-800 border border-gray-700 rounded-xl p-6 shadow-lg h-full">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-1 h-8 bg-green-500 rounded"></div>
+                        <h2 class="text-2xl font-bold text-white">📊 Resultados</h2>
+                    </div>
+                    
+                    {% if recent_matches %}
+                    <div class="space-y-2">
+                        {% for match in recent_matches %}
+                        <a href="{% url 'analytics:match_detail' match.id %}" class="block group">
+                            <div class="bg-gray-700/50 hover:bg-gray-700 rounded-lg p-3 transition-all cursor-pointer border border-transparent hover:border-green-500/50">
+                                <p class="text-xs text-gray-500 mb-2">{{ match.match_date|date:"d/m/Y" }}</p>
+                                <div class="flex items-center justify-between gap-2">
+                                    <p class="text-sm font-semibold text-white truncate flex-1">{{ match.home_team.name|truncatewords:2 }}</p>
+                                    <p class="text-xl font-black text-white min-w-fit">
+                                        {% if match.home_score is not None %}
+                                            {{ match.home_score }}-{{ match.away_score }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </p>
+                                    <p class="text-sm font-semibold text-white truncate flex-1 text-right">{{ match.away_team.name|truncatewords:2 }}</p>
+                                </div>
+                                
+                                <!-- Resultado -->
+                                <p class="text-xs mt-2 font-bold">
+                                    {% if match.home_team == selected_team %}
+                                        {% if match.home_score > match.away_score %}
+                                            <span class="text-green-400">✅ VICTORIA</span>
+                                        {% elif match.home_score == match.away_score %}
+                                            <span class="text-yellow-400">⚪ EMPATE</span>
+                                        {% else %}
+                                            <span class="text-red-400">❌ DERROTA</span>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if match.away_score > match.home_score %}
+                                            <span class="text-green-400">✅ VICTORIA</span>
+                                        {% elif match.away_score == match.home_score %}
+                                            <span class="text-yellow-400">⚪ EMPATE</span>
+                                        {% else %}
+                                            <span class="text-red-400">❌ DERROTA</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-12 text-gray-400">
+                        <p class="text-2xl mb-2">📭</p>
+                        <p>No hay resultados</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Jugadores Principales -->
+        {% if season_kpis.top_players %}
+        <div class="bg-gray-800 border border-gray-700 rounded-xl p-6 shadow-lg mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-1 h-8 bg-yellow-500 rounded"></div>
+                <h2 class="text-2xl font-bold text-white">👥 Plantel - Top 11</h2>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b-2 border-gray-600">
+                            <th class="text-left py-3 px-4 text-gray-400 font-semibold">#</th>
+                            <th class="text-left py-3 px-4 text-gray-400 font-semibold">JUGADOR</th>
+                            <th class="text-center py-3 px-4 text-gray-400 font-semibold">POS</th>
+                            <th class="text-center py-3 px-4 text-gray-400 font-semibold">PJ</th>
+                            <th class="text-center py-3 px-4 text-gray-400 font-semibold">MIN</th>
+                            <th class="text-center py-3 px-4 text-gray-400 font-semibold">GOLES</th>
+                            <th class="text-center py-3 px-4 text-gray-400 font-semibold">ASIST</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for player_stat in season_kpis.top_players %}
+                        <tr class="border-b border-gray-700 hover:bg-gray-700/50 transition">
+                            <td class="py-3 px-4 text-gray-400 font-bold">{{ forloop.counter }}</td>
+                            <td class="py-3 px-4">
+                                <a href="{% url 'analytics:player_profile' player_stat.player.id %}" class="text-white font-semibold hover:text-blue-400 transition">
+                                    {{ player_stat.player.full_name }}
+                                </a>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs font-semibold">{{ player_stat.player.position }}</span>
+                            </td>
+                            <td class="py-3 px-4 text-center text-white font-medium">{{ player_stat.matches_played }}</td>
+                            <td class="py-3 px-4 text-center text-white font-semibold">{{ player_stat.minutes_played }}</td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="bg-green-900 text-green-300 px-3 py-1 rounded font-bold">{{ player_stat.goals }}</span>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="bg-blue-900 text-blue-300 px-3 py-1 rounded font-bold">{{ player_stat.assists }}</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Footer Info -->
+        <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-4 text-center text-gray-400 text-sm">
+            ⚽ Football Analytics Platform v2.0 | Análisis Táctico Profesional
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('team-select')?.addEventListener('change', function(e) {
+        const teamId = e.target.value;
+        window.location.href = `?team_id=${teamId}`;
+    });
+</script>
+{% endblock %}

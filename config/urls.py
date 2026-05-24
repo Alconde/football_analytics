@@ -6,10 +6,12 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
+    
     path("", include("apps.core.urls")),
     path("players/", include("apps.players.urls")),
     path("matches/", include("apps.matches.urls")),
     path("tactical/", include("apps.tactical.urls")),
+    path("reports/", include("apps.reports.urls")),
 ]
 
 if "debug_toolbar" in settings.INSTALLED_APPS:
